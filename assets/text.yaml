@@ -1,0 +1,49 @@
+intro: >
+  SegmentME is a powerful image annotation and segmentation tool designed for high-throughput phenotyping, object instance analysis, and smart annotation workflows using models like SAM2, DEXTR, and YOLO. The application provides a user-friendly interface to annotate, manage, and visualize image data with rich statistics and custom tooling. It supports various image formats and integrates seamlessly with machine learning models for efficient annotation tasks. SegmentME is ideal for researchers, data scientists, and anyone needing to annotate images quickly and accurately.
+
+tools:
+  SAM2:
+    desc: >
+      Segment Anything Model 2 (SAM2) is a state-of-the-art foundation model for segmentation.
+      You can interactively segment objects by clicking foreground (positive) or background (negative) points.
+      Ideal for general object boundaries.
+
+      **Press `E`** to execute the model. **Press `S`** to save the mask.
+    video: assets/tour/sam.mp4
+    citation: "[Kirillov et al., 2023](https://arxiv.org/abs/2304.02643)"
+
+  SAM2-Box:
+    desc: >
+      Use SAM2 by drawing a bounding box. This is useful when you want to quickly guide the model
+      to a specific region of interest.
+
+      **Press `E`** to generate the mask. **Press `S`** to save it.
+    video: assets/tour/box.mp4
+    citation: "[Kirillov et al., 2023](https://arxiv.org/abs/2304.02643)"
+
+  DEXTR:
+    desc: >
+      Deep Extreme Cut (DEXTR) segments objects using 4+ extreme points (top, bottom, left, right).
+      It's particularly good for segmenting distinct, irregular shapes with minimal clicks.
+
+      **Press `E`** to generate the mask. **Press `S`** to save it.
+    video: assets/tour/dextr.mp4
+    citation: "[Maninis et al., 2018](https://arxiv.org/abs/1711.09081)"
+
+  Manual:
+    desc: >
+      This tool allows freehand polygon annotation by clicking around the object's edges.
+      Perfect for full manual control when automatic tools aren’t accurate.
+
+      **Press `S`** to finalize and save the mask.
+    video: assets/tour/manual.mp4
+    citation: null
+
+  Scissors:
+    desc: >
+      The intelligent scissors tool follows image edges between seed points, making it great for tracing complex contours.
+      It offers semi-automatic support by snapping paths to high-contrast boundaries.
+
+      **Press `S`** to save the completed mask.
+    video: assets/tour/scissors.mp4
+    citation: "[Mortensen & Barrett, 1995](https://doi.org/10.1109/34.387593)"
