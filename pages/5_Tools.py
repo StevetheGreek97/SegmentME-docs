@@ -23,5 +23,9 @@ for name, data in tools.items():
     citation = data.get("citation")
     if citation:
         st.markdown(f"**Relevant Paper:** {citation}")
-    st.video(data["video"])
+
+    try:
+        st.video(data["video"])
+    except KeyError:
+        st.markdown("No video available for this tool.")
     st.markdown("---")
