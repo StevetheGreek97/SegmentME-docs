@@ -9,7 +9,7 @@ We recommend reviewing this section before starting your annotation tasks.
 """)
 
 st.markdown("### Interface Overview")
-st.image("assets/tour/interface.png", 
+st.image("assets/interface.png", 
          caption="SegmentME Interface Overview", 
          width=1000,
          use_column_width=False)

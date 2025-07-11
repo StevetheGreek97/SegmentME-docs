@@ -18,7 +18,8 @@ Welcome to the SegmentME manual! This guide will help you understand how to use 
 st.divider()
 st.markdown(get_text("intro"))
 
+try:
+    st.video("assets/tour/tester.mp4", loop= True,autoplay= True,)
+except Exception:
+    st.markdown("No video available for this section yet.")
 
-st.video("assets/tour/tester.mp4", 
-         loop= True,
-         autoplay= True,)
