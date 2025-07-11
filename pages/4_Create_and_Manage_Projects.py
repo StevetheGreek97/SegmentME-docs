@@ -1,94 +1,102 @@
 import streamlit as st
+from utils.utils import get_text
 
-st.set_page_config(page_title="Create and Manage Projects", page_icon="📂")
+st.set_page_config(
+    page_title="Create and Manage Projects",
+    page_icon="📂",
+    layout="centered"
+)
+
 st.title("📂 Create and Manage Projects")
 
+st.markdown(
+    """
+    Use this guide to create new projects, import data, organize classes, and manage annotations in **SegmentME**.
+    """
+)
+
+# ---------- Section: Project Creation & Import ----------
+st.subheader("🚀 Set up Your Project")
+
+col_keys = {
+    "🆕 Create a Project": "create_project",
+    "🖼️ Import Images": "image_import"
+}
+cols = st.columns(2)
+
+for i, (title, key) in enumerate(col_keys.items()):
+    with cols[i]:
+        st.markdown(f"### {title}")
+        data = get_text(key)
+        print(data)
+        st.markdown(data["instructions"])
+        setup = data.get("setup", "")
+        if setup:
+            st.markdown("##### 📁 Project Folder Structure")
+            st.markdown(setup)
+   
+
+with st.expander("📽️ Watch how to create and import images"):
+    try:
+        with open("assets/tour/create_import.mp4", "rb") as video_file:
+            st.video(video_file.read(), loop=True, autoplay=True)
+    except Exception:
+        st.warning("No video available for this section yet.")
+
+
+
+# ---------- Section: Add / Remove Classes ----------
+st.subheader("🏷️ Manage Annotation Classes")
 st.markdown("""
-Use this guide to create new projects, import data, organize classes, and manage annotations in SegmentME.
+Organize your annotation workflow by adding meaningful class names and assigning colors to them.  
+You can also remove existing classes when they are no longer needed — this helps keep your project tidy and focused.
 """)
+col_keys = {
+    "➕ Add a Class": "add_class",
+    "➖ Remove a Class": "remove_class"
+}
+cols = st.columns(2)
 
-# Section 1: Create Project
-st.header("🆕 Create a Project")
-st.markdown("""
-To begin, create a new project workspace:
+for i, (title, key) in enumerate(col_keys.items()):
+    with cols[i]:
+        st.markdown(f"### {title}")
+        data = get_text(key)
+        st.markdown(data["instructions"])
 
-1. Click **File → New Project**
-2. Enter a name (e.g., `experiment_2025`)
-3. Choose or create a target folder
-4. SegmentME creates subfolders:
-   - `images/` – image files
-   - `labels/` – YOLO `.txt` annotations
-   - `project.yaml` – config and metadata
+with st.expander("📽️ Watch how to manage classes"):
+    try:
+        with open("assets/tour/add_remove.mp4", "rb") as video_file:
+            st.video(video_file.read(), loop=True, autoplay=True)
+    except Exception:
+        st.warning("No video available for this section yet.")
 
-✅ Projects are saved automatically as you work.
-""")
 
-st.divider()
+# ---------- Section: Delete / Rename Masks ----------
+st.subheader("✂️ Delete or Rename Masks")
 
-# Section 2: Import Images
-st.header("🖼️ Import Images")
-st.markdown("""
-To add images to your project:
+col_keys = {
+    "🗑️ Delete Masks": "delete_masks",
+    "✏️ Rename Masks": "rename_masks"
+}
+cols = st.columns(2)
 
-- Go to **File → Import Images**
-- Supported formats: `.jpg`, `.png`, `.tif`, `.bmp`
-- You can import:
-  - A folder of images
-  - A single image
-  - Or drag-and-drop via the interface
+for i, (title, key) in enumerate(col_keys.items()):
+    with cols[i]:
+        st.markdown(f"### {title}")
+        data = get_text(key)
+        st.markdown(data["instructions"])
 
-SegmentME automatically displays the images in the central panel.
-""")
+with st.expander("📽️ Watch how to manage masks"):
+    try:
+        with open("assets/tour/del_rename.mp4", "rb") as video_file:
+            st.video(video_file.read(), loop=True, autoplay=True)
+    except Exception:
+        st.warning("No video available for this section yet.")
 
-st.divider()
 
-# Section 3: Add / Remove Classes
-st.header("🏷️ Add or Remove Classes")
-st.markdown("""
-To define the object categories in your project:
+st.subheader("Export Annotations")
+st.markdown("""Not Implemented yet""")
 
-### ➕ Add a Class
-- Use the **Class Selector** panel (left sidebar)
-- Click `+ Add Class`
-- Enter a class name (e.g., `tail`, `eye`, `debris`)
-- New class appears in the dropdown and color map
+st.markdown("🔚 *You're all set to manage your project! Continue with annotation or explore the tools above.*")
 
-### ➖ Remove a Class
-- Select the class in the dropdown
-- Click `🗑️ Remove Class`
-- All masks with this class will be deleted (confirmation required)
 
-✅ Classes are stored in `project.yaml` and saved with the project.
-""")
-
-st.divider()
-
-# Section 4: Delete Masks
-st.header("✂️ Delete Masks")
-st.markdown("""
-To remove unwanted masks from an image:
-
-- Click on the mask directly in the image viewer
-- Or select it from the **Annotation Table** (right sidebar)
-- Press `Delete` or click **🗑️ Remove Mask**
-
-🧠 Tip: You can delete multiple masks at once using checkboxes in the table.
-""")
-
-st.divider()
-
-# Section 5: Rename Annotations
-st.header("✏️ Rename Annotation Files")
-st.markdown("""
-To rename annotation files (for better organization):
-
-1. Open the **File → Rename Annotations** dialog  
-2. Options:
-   - Rename by image name
-   - Add class prefix or suffix
-   - Replace substrings (e.g., `scan001 → sample001`)
-
-All label `.txt` files will be renamed accordingly, and linked image names will be preserved.
-
-🧪 Use this to standardize file names for training or batch evaluation.
-""")

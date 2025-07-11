@@ -1,7 +1,9 @@
 import streamlit as st
 from utils.utils import get_text
 
-st.set_page_config(page_title="SegmentME Manual", page_icon="/home/steve/Documents/Projects/docsSE/assets/logo.png", layout="wide")
+st.set_page_config(page_title="SegmentME Manual", 
+                   page_icon="/home/steve/Documents/Projects/docsSE/assets/logo.png", 
+                   layout="wide")
 
 # Use columns to align image and title
 col1, col2 = st.columns([1, 17])  # Adjust ratio as needed
@@ -19,7 +21,12 @@ st.divider()
 st.markdown(get_text("intro"))
 
 try:
-    st.video("assets/tour/tester.mp4", loop= True,autoplay= True,)
+
+    video_file = open("assets/tour/tester.mp4", "rb")
+    video_bytes = video_file.read()
+
+    st.video(video_bytes,loop= True,autoplay= True)
+    #st.video("assets/tour/tester.mp4", loop= True,autoplay= True,)
 except Exception:
     st.markdown("No video available for this section yet.")
 

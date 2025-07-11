@@ -44,12 +44,9 @@ with tabs[1]:
         st.image('assets/windows.png', width=50)
     with col2:
         st.markdown("### Windows Installation")
-
         st.markdown("Click the button below to download the SegmentME Windows installer:")
 
-        # 🔁 Replace this with your actual installer URL
-        download_url = "https://yourdomain.com/downloads/SegmentME_installer.exe"
-
+        download_url = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.1/SegmentME.exe"
         st.markdown(f"[⬇ Download SegmentME Installer]({download_url})", unsafe_allow_html=True)
 
 

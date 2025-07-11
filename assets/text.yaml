@@ -47,3 +47,62 @@ tools:
       **Press `S`** to save the completed mask.
     video: assets/tour/scissors.mp4
     citation: "[Mortensen & Barrett, 1995](https://doi.org/10.1109/34.387593)"
+
+
+create_project:
+  instructions: |
+
+
+    1. Click **Create New Project** in the main menu  
+    2. Enter a project name (e.g., `MyCoolProject`)  
+    3. Choose or create a target folder to save your project
+
+  setup: |
+
+    - The project folder will contain all images, masks, and metadata.
+    - A `project_name.SEproj` will be created in the target folder, which is used to manage the project. The project will be automatically loaded into the application.
+    - You can create multiple projects to organize your work.
+    - Each project is independent and can have its own classes and annotations.
+
+image_import:
+  instructions: |
+    - Once you create the project, the application will prompt you to import images.
+    - You can also import images later by Clicking the **File → Import Images** Duplicate images will be skipped. 
+
+    - Supported formats:`.jpg` `.png` `.jpeg` `.tiff`
+
+
+add_class:
+  instructions: |
+
+    - Use the **Class Selector** panel (left sidebar)
+    1. Click `Add Class`
+    2. Enter a class name (e.g., `d_galeata`, `d_pulex`)
+    3. Chooce a color for the class
+    4. New class appears in the dropdown and color map
+
+remove_class:
+  instructions: |
+    - Use the **Class Selector** panel (left sidebar)
+    1. Select the class in the dropdown
+    2. Click `Remove Selceted`
+    3. All masks with this class will be deleted (confirmation required)
+
+
+delete_masks:
+  instructions: |
+    - Use the **Annotation Selector** panel (right sidebar) or click the mask in the image
+    1. Select the anntatation in the table
+    2. Click `del` key
+    3. The selected mask will be deleted 
+    
+    🧠 Tip: You can delete multiple masks at once using checkboxes in the table.
+
+rename_masks:
+  instructions: |
+    - Use the **Annotation Selector** panel (right sidebar) or click the mask in the image
+    1. Select the anntatation in the table
+    2. Duble-click the `Class` row of the selected mask
+    3. Enter a new name for the mask
+    4. The mask will be renamed in the table 
+    5. if that class does not exist, the annotation will be assigned to the `Unclassified` class (white color). *Important: this will not create a new class, it will just rename the mask*. You should manually create a new class if needed.

@@ -1,0 +1,3 @@
+assets/downloadables
+utils/__pycache__/
+*.pyc
