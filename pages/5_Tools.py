@@ -26,6 +26,6 @@ for name, data in tools.items():
 
     try:
         st.video(data["video"])
-    except KeyError:
+    except Exception:
         st.markdown("No video available for this tool.")
     st.markdown("---")
