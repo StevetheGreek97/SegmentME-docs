@@ -1,12 +1,115 @@
 import streamlit as st
-import pandas as pd
+from utils.utils import get_text
 
-st.set_page_config(page_title="Discover and Learn", page_icon="🧠")
+st.set_page_config(page_title="Discover and Learn", page_icon="🧠", layout="wide")
 st.title("🧠 Discover and Learn")
 
-# Intro
+# Custom CSS for full-page theme-aware styling
 st.markdown("""
-Welcome to the **Discover and Learn** page. Here you'll find clear explanations of core computer vision terms and a complete guide to setting up a CV project using SegmentME.
+    <style>
+        /* Default fallback (will apply if no theme is set explicitly) */
+        :root {
+            --background-color: #0e1117;
+            --gradient-start: #1c1f26;
+            --gradient-end: #2a2d36;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #e0e0e0;
+            --title-color: #ffd700;
+            --shadow-color: rgba(255, 255, 255, 0.07);
+        }
+
+        body[data-theme="light"] {
+            --background-color: #f4f6fa;
+            --gradient-start: #edf0f7;
+            --gradient-end: #dfe5f0;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-color: #2c2c2c;
+            --title-color: #e88f00;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body[data-theme="dark"] {
+            --background-color: #0e1117;
+            --gradient-start: #1c1f26;
+            --gradient-end: #2a2d36;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #e0e0e0;
+            --title-color: #ffd700;
+            --shadow-color: rgba(255, 255, 255, 0.07);
+        }
+
+        [data-testid="stAppViewContainer"] {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 2rem;
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .step-card:hover {
+            transform: scale(1.01);
+        }
+
+        .step-title {
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: var(--title-color);
+            margin-bottom: 14px;
+        }
+
+        .step-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--text-color);
+        }
+
+        .step-content ul {
+            list-style-type: "✔️ ";
+            padding-left: 1.4em;
+        }
+
+        .step-content li {
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid var(--title-color);
+            padding: 12px 16px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+
+        .terminology-box {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 6px 18px var(--shadow-color);
+        }
+
+        .terminology-term {
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--title-color);
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# ────────────────────────────────
+# INTRO
+# ────────────────────────────────
+
+st.markdown("""
+Welcome to the Discover and Learn page. Explore computer vision concepts and follow a complete walkthrough to plan, annotate, and train your model using SegmentME.
 """)
 
 # ────────────────────────────────
@@ -15,7 +118,6 @@ Welcome to the **Discover and Learn** page. Here you'll find clear explanations 
 
 st.divider()
 st.header("📘 Terminology")
-st.markdown("Grouped definitions of essential concepts in computer vision and annotation.")
 
 groups = {
     "🧠 Vision Tasks": [
@@ -44,148 +146,66 @@ for group_title, terms in groups.items():
     cols = st.columns(3)
     for i, (term, desc) in enumerate(terms):
         with cols[i % 3]:
-            with st.expander(term):
-                st.write(desc)
+            st.markdown(f"""
+                <div class="terminology-box">
+                    <div class="terminology-term">{term}</div>
+                    <div style='color: var(--text-color); font-size: 0.95rem;'>{desc}</div>
+                </div>
+            """, unsafe_allow_html=True)
+
+# ────────────────────────────────
+# PROJECT SETUP STEPS
+# ────────────────────────────────
 
 st.divider()
 st.header("🛠️ How to Set Up a Computer Vision Project")
-st.markdown("A complete walkthrough for building a CV pipeline with SegmentME — from planning and annotation to training and deployment.")
 
-# Structured step-by-step guide
-steps = [
-    {
-        "icon": "🎯",
-        "title": "Define the Objective",
-        "content": """
-Decide what your project is trying to achieve.
 
-**Examples:**
-- Classify microscopy images (e.g. healthy vs. infected)
-- Segment body parts (e.g. eye, tail, gut)
-- Count individuals per image (e.g. Daphnia density)
+steps = get_text('discover', 'assets/discover.yaml')
 
-Define whether your output is:
-- Bounding boxes (Object Detection)
-- Pixel masks (Instance/Semantic Segmentation)
-- Category labels (Classification)
-- Or zero-shot masks (SAM)"""
-    },
-    {
-        "icon": "🏷️",
-        "title": "Define Classes",
-        "content": """
-List the object types you'll label.
-
-**Tips:**
-- Use short, lowercase names (e.g. `eye`, `tail`, `debris`)
-- Keep the number of classes manageable
-- Make sure each class is visually distinguishable
-
-**Example:**
-```python
-classes = ['eye', 'tail', 'gut', 'debris']
-```"""
-    },
-    {
-        "icon": "📸",
-        "title": "Collect & Curate Images",
-        "content": """
-Use a variety of images that match real-world conditions.
-
-**Include:**
-- Good and poor focus
-- Different light conditions
-- Background-only (blank) images
-- Images with partial or overlapping objects
-
-**Goal:** At least 100–200 samples per class"""
-    },
-    {
-        "icon": "✍️",
-        "title": "Annotate Using SegmentME",
-        "content": """
-Use tools based on your task:
-
-| Tool      | Best For                  |
-|-----------|---------------------------|
-| SAM2      | Zero-shot instance masks  |
-| DEXTR     | Precise user-guided masks |
-| Polygon   | Custom fine control       |
-| BBox Tool | Faster, coarse marking    |
-
-Save in YOLO format or export masks for segmentation training.
-"""
-    },
-    {
-        "icon": "🧠",
-        "title": "Choose a Model",
-        "content": """
-Pick a model architecture that fits your compute and task.
-
-**Options:**
-- `YOLOv8-seg`: Fast instance segmentation
-- `SAM2`: No training needed (zero-shot)
-- `Detectron2`: Custom control, great for research
-
-Start with pretrained models. Fine-tune only when needed.
-"""
-    },
-    {
-        "icon": "📊",
-        "title": "Train & Validate",
-        "content": """
-Split your data:
-- 70% training
-- 15% validation
-- 15% testing
-
-**Track:**
-- mAP (mean average precision)
-- IoU (overlap accuracy)
-- Per-class metrics
-
-Use frameworks like Ultralytics CLI or Python API.
-"""
-    },
-    {
-        "icon": "🔁",
-        "title": "Evaluate & Improve",
-        "content": """
-After training, visually inspect predictions.
-
-✅ Are all objects found?  
-❌ Any overfitting?  
-❓ Are masks accurate?
-
-**If needed:**
-- Add more diverse samples
-- Refine poor annotations
-- Retrain on tough cases
-"""
-    },
-    {
-        "icon": "🚀",
-        "title": "Run Inference or Deploy",
-        "content": """
-Use your model to annotate new images with SegmentME or a script.
-
-**You can:**
-- Measure mask area (e.g. in mm² or pixels)
-- Count per-class instances
-- Export YOLO `.txt` or result `.csv` files
-
-Integrate predictions into analysis or research workflows.
-"""
-    }
-]
-
-# Render steps in visually clear blocks
 for step in steps:
-    with st.container():
-        col1, col2 = st.columns([1, 9])
-        with col1:
-            st.markdown(f"### {step['icon']}")
-        with col2:
-            st.markdown(f"#### {step['title']}")
-            st.markdown(step["content"])
-    st.markdown("---")
+    content = step['content']
+    lines = content.strip().split('\n')
+    
+    bullets = []
+    guidelines = []
+    inside_guidelines = False
+
+    for line in lines:
+        stripped = line.strip()
+
+        # Start of Annotation Guidelines block
+        if "annotation guidelines" in stripped.lower():
+            inside_guidelines = True
+            continue
+
+        # Gather guideline points
+        if inside_guidelines and (stripped.startswith('-') or stripped.startswith('*')):
+            cleaned = stripped.lstrip('-* ').strip()
+            guidelines.append(f"<li>{cleaned}</li>")
+        
+        # Otherwise, treat as normal bullet
+        elif not inside_guidelines and (stripped.startswith('-') or stripped.startswith('*')):
+            cleaned = stripped.lstrip('-* ').strip()
+            bullets.append(f"<li>{cleaned}</li>")
+
+    # Main list
+    content_html = "<ul>" + "\n".join(bullets) + "</ul>"
+
+    # Add guideline block if it exists
+    if guidelines:
+        content_html += f"""
+        <div class='highlight-box'>
+            <strong>Annotation Guidelines</strong>
+            <ul>{''.join(guidelines)}</ul>
+        </div>
+        """
+
+    # Display the card
+    st.markdown(f"""
+        <div class="step-card">
+            <div class="step-title">{step['title']}</div>
+            <div class="step-content">{content_html}</div>
+        </div>
+    """, unsafe_allow_html=True)
+

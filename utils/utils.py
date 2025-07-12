@@ -1,4 +1,4 @@
-def get_text(section
+def get_text(section, file_path='assets/text.yaml'
 ):
     """
     Get the text for a given section from the text.yaml file.
@@ -13,7 +13,7 @@ def get_text(section
     from pathlib import Path
 
     # Load the YAML file
-    text_file = Path(__file__).parent.parent / 'assets' / 'text.yaml'
+    text_file = Path(__file__).parent.parent / file_path
     with open(text_file, 'r') as file:
         text_data = yaml.safe_load(file)
 

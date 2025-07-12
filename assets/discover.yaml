@@ -1,0 +1,39 @@
+discover:
+  - title: "Step 1: Define the Project Scope"
+    content: |
+      - Identify the problem: Clearly define the problem you want to solve with image segmentation.
+      - Determine the scope and objectives: Set clear goals for what you want to achieve with the segmentation project.
+
+  - title: "Step 2: Select Classes and Annotations"
+    content: |
+      - Choose the classes: List all object categories you want to segment in your images (e.g., cars, trees, buildings).
+      - Define the annotation format: Decide how you will annotate the images (e.g., bounding boxes, polygons).
+        - Annotation Guidelines
+          - Consistency: Ensure that all annotators follow the same guidelines to maintain annotation quality.
+          - Annotator training: Provide comprehensive training with practical examples and feedback.
+          - Clarity: Offer clear instructions on how to annotate each class and handle edge cases.
+          - Quality control: Review and provide feedback on annotations to maintain high standards.
+
+  - title: "Step 3: Collect and Prepare Data"
+    content: |
+      - Gather images: Collect a diverse dataset that represents the classes you want to segment.
+      - Data preprocessing: Resize, normalize, and augment images to improve model generalization.
+      - Split the dataset: Divide into training, validation, and test sets.
+
+  - title: "Step 4: Choose a Segmentation Model"
+    content: |
+      - Select a model: Choose based on project needs (e.g., U-Net, Mask R-CNN, DeepLab).
+      - Understand the architecture: Learn how your model handles segmentation.
+      - Pre-trained models: Speed up training by starting with pre-trained weights.
+
+  - title: "Step 5: Train the Model"
+    content: |
+      - Training process: Set hyperparameters (learning rate, batch size) and begin training.
+      - Monitor training: Track performance metrics like loss and accuracy.
+      - Validation: Tune using the validation set to avoid overfitting.
+
+  - title: "Step 6: Evaluate the Model"
+    content: |
+      - Performance metrics: Use IoU, precision, recall, and F1-score.
+      - Visualize results: Assess accuracy by visually inspecting predictions.
+      - Error analysis: Identify common failure cases for improvement.
