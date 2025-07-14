@@ -1,3 +1,5 @@
+import re
+
 def get_text(section, file_path='assets/text.yaml'
 ):
     """
@@ -19,6 +21,11 @@ def get_text(section, file_path='assets/text.yaml'
 
     # Return the requested section
     return text_data.get(section, '')
+
+
+def is_valid_email(email: str) -> bool:
+    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    return re.match(pattern, email) is not None
 
 if __name__ == "__main__":
     # Example usage
