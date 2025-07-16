@@ -3,6 +3,35 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
+def send_auto_reply(name, last_name, recipient_email, smtp_user, smtp_pass):
+    subject = "🎉 Your SegmentME Installer is Ready"
+    body = f"""
+Hi {name} {last_name},
+
+Thanks for your interest in SegmentME!
+
+You can download the Windows installer here:
+🔗 https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.1/SegmentME.exe
+
+If you have any questions or feedback, feel free to reply to this email.
+
+Best regards,  
+PopGen Team
+"""
+
+    msg = MIMEMultipart()
+    msg["From"] = smtp_user
+    msg["To"] = recipient_email
+    msg["Subject"] = subject
+
+    msg.attach(MIMEText(body, "plain"))
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+
+
 def is_valid_email(email):
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
 

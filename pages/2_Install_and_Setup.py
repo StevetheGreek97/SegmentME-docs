@@ -2,7 +2,7 @@ import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
-from utils.utils import is_valid_email, notify_admin
+from utils.utils import is_valid_email, notify_admin, send_auto_reply
 # Icons
 windows_icon_url = "https://commons.wikimedia.org/wiki/File:Windows_logo_-_2002%E2%80%932012_(Black).svg#/media/File:Unofficial_Windows_logo_variant_-_2002%E2%80%932012_(Multicolored).svg"
 macos_icon_url = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
@@ -89,7 +89,15 @@ with tabs[1]:
                         smtp_pass=st.secrets["email"]["password"],
                         recipient_email=st.secrets["email"]["user"]
                     )
-                    st.success("✅ Thanks! Your request has been submitted. You’ll receive the installer via email soon.")
+                    send_auto_reply(
+                    name,
+                    last_name,
+                    recipient_email=email,
+                    smtp_user=st.secrets["email"]["user"],
+                    smtp_pass=st.secrets["email"]["password"]
+                    )
+                    st.success("✅ Your request has been submitted! The download link has been sent to your email.")
+                    st.balloons()
                 except Exception as e:
                     st.warning(f"Request was logged but email failed to send. Error: {e}")
 # --- macOS tab ---
