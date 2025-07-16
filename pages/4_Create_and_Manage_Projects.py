@@ -94,8 +94,19 @@ with st.expander("📽️ Watch how to manage masks"):
         st.warning("No video available for this section yet.")
 
 
-st.subheader("Export Annotations")
-st.markdown("""Not Implemented yet""")
+# ---------- Section: Export Annotations ----------
+st.subheader("📤 Export Annotations")
+
+data = get_text("export_annotations")
+st.markdown(data["instructions"])
+
+with st.expander("📽️ Watch how to export annotations"):
+    try:
+        with open("assets/tour/export_ann.mp4", "rb") as video_file:
+            st.video(video_file.read(), loop=True, autoplay=True)
+    except Exception:
+        st.warning("No video available for this section yet.")
+
 
 st.markdown("🔚 *You're all set to manage your project! Continue with annotation or explore the tools above.*")
 

@@ -47,6 +47,18 @@ tools:
       **Press `S`** to save the completed mask.
     video: assets/tour/scissors.mp4
     citation: "[Mortensen & Barrett, 1995](https://doi.org/10.1109/34.387593)"
+  Inference:
+    desc: >
+        The Inference tool allows you to automatically annotate your entire uploaded dataset using a pretrained model 
+        (e.g., YOLO, SAM, etc). This is ideal for bulk annotation or initializing masks before refinement.
+
+        Choose the model and the confidence threshold for the inference.
+        **Press `Run`** to start the inference process. The model will process all images in the project folder and generate masks based on the selected model.
+        Annotated masks will be automatically saved.
+
+
+    video: assets/tour/custom_inference.mp4
+    citation: null
 
 
 create_project:
@@ -106,3 +118,16 @@ rename_masks:
     3. Enter a new name for the mask
     4. The mask will be renamed in the table 
     5. if that class does not exist, the annotation will be assigned to the `Unclassified` class (white color). *Important: this will not create a new class, it will just rename the mask*. You should manually create a new class if needed.
+export_annotations:
+  instructions: |
+
+      SegmentME allows you to export all annotation data from your project for training, analysis, or sharing.
+
+      **Exported Files:**
+      - `.txt` files for each image, saved in the `annotations/curent_date` folder
+      - Each line represents a polygon mask in the format:  
+        `class_id x1 y1 x2 y2 ... xn yn`
+      - `data.yaml` file containing:
+        - List of class names
+
+
