@@ -23,9 +23,10 @@ for name, data in tools.items():
     citation = data.get("citation")
     if citation:
         st.markdown(f"**Relevant Paper:** {citation}")
-
-    try:
-        st.video(data["video"])
-    except Exception:
-        st.markdown("No video available for this tool.")
-    st.markdown("---")
+    with st.expander("📽️ Watch how to manage classes"):
+        try:
+            
+            st.video(data["video"])
+        except Exception:
+            st.markdown("No video available for this tool.")
+        st.markdown("---")

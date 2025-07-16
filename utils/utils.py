@@ -1,4 +1,34 @@
 import re
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def is_valid_email(email):
+    return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
+
+def notify_admin(name, last_name, user_email, comments, smtp_user, smtp_pass, recipient_email):
+    subject = "📥 New SegmentME Installer Request"
+    body = f"""
+You received a new request for the SegmentME installer.
+
+👤 Name: {name} {last_name}
+📧 Email: {user_email}
+📝 Comments: {comments or 'None provided'}
+
+Please follow up manually with the download link.
+"""
+
+    msg = MIMEMultipart()
+    msg["From"] = smtp_user
+    msg["To"] = recipient_email
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body, "plain"))
+
+    with smtplib.SMTP("smtp.gmail.com", 587) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.send_message(msg)
+
 
 def get_text(section, file_path='assets/text.yaml'
 ):
@@ -22,10 +52,6 @@ def get_text(section, file_path='assets/text.yaml'
     # Return the requested section
     return text_data.get(section, '')
 
-
-def is_valid_email(email: str) -> bool:
-    pattern = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-    return re.match(pattern, email) is not None
 
 if __name__ == "__main__":
     # Example usage
