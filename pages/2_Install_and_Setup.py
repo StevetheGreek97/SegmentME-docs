@@ -63,8 +63,8 @@ with tabs[1]:
     st.markdown("*You will receive the link by email after your request is approved.*")
 
     with st.form("windows_download_form", border=True):
-        name = st.text_input("🧑 First Name")
-        last_name = st.text_input("👨‍🦱 Last Name")
+        name = st.text_input("First Name")
+        last_name = st.text_input("Last Name")
         email = st.text_input("📧 Email Address", placeholder="e.g. john@example.com")
         comments = st.text_area("💬 Comments (optional)", height=100)
         submitted = st.form_submit_button("📨 Submit Request")

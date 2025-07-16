@@ -1,121 +1,85 @@
+# pages/1_Discover_and_Learn.py
 import streamlit as st
 from utils.utils import get_text
 
 st.set_page_config(page_title="Discover and Learn", page_icon="🧠", layout="wide")
 st.title("🧠 Discover and Learn")
 
-# Custom CSS for full-page theme-aware styling
+# Fancy but theme-safe CSS
 st.markdown("""
-    <style>
-        /* Default fallback (will apply if no theme is set explicitly) */
-        :root {
-            --background-color: #0e1117;
-            --gradient-start: #1c1f26;
-            --gradient-end: #2a2d36;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-color: #e0e0e0;
-            --title-color: #ffd700;
-            --shadow-color: rgba(255, 255, 255, 0.07);
-        }
+<style>
+    /* Card Styling */
+    .card {
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1.5rem;
+        border-radius: 16px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(10px);
+        box-shadow:
+            0 4px 10px rgba(0, 0, 0, 0.2),
+            0 2px 4px rgba(0, 0, 0, 0.15);
+        transition: all 0.2s ease;
+    }
 
-        body[data-theme="light"] {
-            --background-color: #f4f6fa;
-            --gradient-start: #edf0f7;
-            --gradient-end: #dfe5f0;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text-color: #2c2c2c;
-            --title-color: #e88f00;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-        }
+    /* Light theme override */
+    body[data-theme="light"] .card {
+        background-color: rgba(255, 255, 255, 0.8);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        box-shadow:
+            0 6px 16px rgba(0, 0, 0, 0.15),
+            0 3px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        body[data-theme="dark"] {
-            --background-color: #0e1117;
-            --gradient-start: #1c1f26;
-            --gradient-end: #2a2d36;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-color: #e0e0e0;
-            --title-color: #ffd700;
-            --shadow-color: rgba(255, 255, 255, 0.07);
-        }
+    /* Hover effect for both themes */
+    .card:hover {
+        transform: scale(1.01);
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.3),
+            0 5px 15px rgba(0, 0, 0, 0.2);
+    }
 
-        [data-testid="stAppViewContainer"] {
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            padding: 2rem;
-        }
+    .card h4 {
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
 
-        .step-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px var(--shadow-color);
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+    .card ul {
+        padding-left: 1.5rem;
+        margin-bottom: 0;
+    }
 
-        .step-card:hover {
-            transform: scale(1.01);
-        }
+    .card p {
+        color: var(--text-color);
+        font-size: 0.96rem;
+        margin: 0;
+    }
 
-        .step-title {
-            font-size: 1.7rem;
-            font-weight: 700;
-            color: var(--title-color);
-            margin-bottom: 14px;
-        }
+    .guidelines {
+        padding: 0.9rem 1.2rem;
+        border-left: 4px solid var(--primary-color);
+        margin-top: 1.2rem;
+        border-radius: 12px;
+        background-color: rgba(255, 215, 0, 0.12);
+        font-size: 0.95rem;
+    }
 
-        .step-content {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: var(--text-color);
-        }
-
-        .step-content ul {
-            list-style-type: "✔️ ";
-            padding-left: 1.4em;
-        }
-
-        .step-content li {
-            margin-bottom: 10px;
-        }
-
-        .highlight-box {
-            background-color: rgba(255, 215, 0, 0.1);
-            border-left: 4px solid var(--title-color);
-            padding: 12px 16px;
-            margin-top: 15px;
-            border-radius: 10px;
-        }
-
-        .terminology-box {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            margin-bottom: 20px;
-            box-shadow: 0 6px 18px var(--shadow-color);
-        }
-
-        .terminology-term {
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: var(--title-color);
-        }
-    </style>
+    body[data-theme="light"] .guidelines {
+        background-color: rgba(255, 235, 150, 0.2);
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# ────────────────────────────────
-# INTRO
-# ────────────────────────────────
 
-st.markdown("""
-Welcome to the Discover and Learn page. Explore computer vision concepts and follow a complete walkthrough to plan, annotate, and train your model using SegmentME.
-""")
 
-# ────────────────────────────────
-# TERMINOLOGY SECTION
-# ────────────────────────────────
+st.markdown("Explore computer vision concepts and follow a practical step-by-step guide to plan, annotate, and train your model with SegmentME.")
 
+# ─────────────────────────────
+# TERMINOLOGY
+# ─────────────────────────────
 st.divider()
 st.header("📘 Terminology")
 
@@ -123,89 +87,73 @@ groups = {
     "🧠 Vision Tasks": [
         ("Image Classification", "Assign a single label to the entire image."),
         ("Object Detection", "Detect and localize multiple objects using bounding boxes."),
-        ("Semantic Segmentation", "Assign a class to every pixel, without separating individual objects."),
-        ("Instance Segmentation", "Segment each object instance separately at the pixel level."),
-        ("Zero-Shot Segmentation", "Segment unseen object categories using models like SAM.")
+        ("Semantic Segmentation", "Assign a class to every pixel."),
+        ("Instance Segmentation", "Separate each object instance pixel-wise."),
+        ("Zero-Shot Segmentation", "Segment unseen categories using models like SAM."),
     ],
     "✍️ Annotation Concepts": [
-        ("Class Label", "The category assigned to an object (e.g., 'eye', 'tail')."),
-        ("Annotation", "The process of labeling image content using masks, boxes, or polygons."),
-        ("Extreme Points", "Top, bottom, left, and right points used to guide segmentation models like DEXTR."),
-        ("Mask", "A binary or class-specific pixel region representing an object."),
-        ("Mask Area", "The number of pixels covered by a mask, often converted to cm².")
+        ("Class Label", "The category assigned to an object."),
+        ("Annotation", "Labeling using masks, boxes, or polygons."),
+        ("Extreme Points", "Key points guiding segmentation models like DEXTR."),
+        ("Mask", "Region representing an object."),
+        ("Mask Area", "Area in pixels or cm²."),
     ],
     "📦 Geometric Structures": [
-        ("Bounding Box (BBox)", "A rectangle enclosing an object, defined by two corner points."),
-        ("Polygon", "A precise outline of an object using a list of (x, y) coordinates."),
-        ("Centroid", "The geometric center of a segmented region, used for measurements or tracking.")
+        ("Bounding Box", "A rectangle enclosing an object."),
+        ("Polygon", "Precise outline using coordinates."),
+        ("Centroid", "Center point of a segmented region."),
     ]
 }
 
-for group_title, terms in groups.items():
-    st.subheader(group_title)
+for section, terms in groups.items():
+    st.subheader(section)
     cols = st.columns(3)
     for i, (term, desc) in enumerate(terms):
         with cols[i % 3]:
             st.markdown(f"""
-                <div class="terminology-box">
-                    <div class="terminology-term">{term}</div>
-                    <div style='color: var(--text-color); font-size: 0.95rem;'>{desc}</div>
-                </div>
+            <div class="card">
+                <h4>{term}</h4>
+                <p style="margin:0.2rem 0 0;">{desc}</p>
+            </div>
             """, unsafe_allow_html=True)
 
-# ────────────────────────────────
+# ─────────────────────────────
 # PROJECT SETUP STEPS
-# ────────────────────────────────
-
+# ─────────────────────────────
 st.divider()
-st.header("🛠️ How to Set Up a Computer Vision Project")
-
+st.header("🛠️ Project Setup Guide")
 
 steps = get_text('discover', 'assets/discover.yaml')
 
 for step in steps:
+    title = step['title']
     content = step['content']
     lines = content.strip().split('\n')
-    
+
     bullets = []
     guidelines = []
     inside_guidelines = False
 
     for line in lines:
         stripped = line.strip()
-
-        # Start of Annotation Guidelines block
         if "annotation guidelines" in stripped.lower():
             inside_guidelines = True
             continue
+        if inside_guidelines and stripped.startswith("-"):
+            guidelines.append(f"<li>{stripped.lstrip('-* ').strip()}</li>")
+        elif not inside_guidelines and stripped.startswith("-"):
+            bullets.append(f"<li>{stripped.lstrip('-* ').strip()}</li>")
 
-        # Gather guideline points
-        if inside_guidelines and (stripped.startswith('-') or stripped.startswith('*')):
-            cleaned = stripped.lstrip('-* ').strip()
-            guidelines.append(f"<li>{cleaned}</li>")
-        
-        # Otherwise, treat as normal bullet
-        elif not inside_guidelines and (stripped.startswith('-') or stripped.startswith('*')):
-            cleaned = stripped.lstrip('-* ').strip()
-            bullets.append(f"<li>{cleaned}</li>")
+    bullet_html = "<ul>" + "\n".join(bullets) + "</ul>"
+    guideline_html = (
+        f"<div class='guidelines'><strong>Annotation Guidelines:</strong><ul>{''.join(guidelines)}</ul></div>"
+        if guidelines else ""
+    )
 
-    # Main list
-    content_html = "<ul>" + "\n".join(bullets) + "</ul>"
-
-    # Add guideline block if it exists
-    if guidelines:
-        content_html += f"""
-        <div class='highlight-box'>
-            <strong>Annotation Guidelines</strong>
-            <ul>{''.join(guidelines)}</ul>
-        </div>
-        """
-
-    # Display the card
     st.markdown(f"""
-        <div class="step-card">
-            <div class="step-title">{step['title']}</div>
-            <div class="step-content">{content_html}</div>
-        </div>
-    """, unsafe_allow_html=True)
-
+            <div class="card">
+                <h4>{title}</h4>
+                {bullet_html}
+                {guideline_html}
+            </div>
+        """, unsafe_allow_html=True)
