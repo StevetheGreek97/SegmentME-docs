@@ -11,7 +11,8 @@ Hi {name} {last_name},
 Thanks for your interest in SegmentME!
 
 You can download the Windows installer here:
-🔗 https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.1/SegmentME.exe
+🔗 https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.3/SegmentME.exe
+
 
 If you have any questions or feedback, feel free to reply to this email.
 
