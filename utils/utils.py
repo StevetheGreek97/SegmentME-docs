@@ -3,7 +3,12 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_auto_reply(name, last_name, recipient_email, smtp_user, smtp_pass):
+def send_auto_reply(platform, name, last_name, recipient_email, smtp_user, smtp_pass):
+    if platform.lower() == 'windows':
+        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.3/SegmentME.exe"
+    elif platform.lower() == 'macos':
+        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v1.0.0/SegmentME.dmg"
+
     subject = "🎉 Your SegmentME Installer is Ready"
     body = f"""
 Hi {name} {last_name},
@@ -11,7 +16,7 @@ Hi {name} {last_name},
 Thanks for your interest in SegmentME!
 
 You can download the Windows installer here:
-🔗 https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.3/SegmentME.exe
+🔗 {download_link}
 
 
 If you have any questions or feedback, feel free to reply to this email.

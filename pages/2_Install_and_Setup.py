@@ -90,8 +90,9 @@ with tabs[1]:
                         recipient_email=st.secrets["email"]["user"]
                     )
                     send_auto_reply(
-                    name,
-                    last_name,
+                    platform="windows",
+                    name=name,
+                    last_name=last_name,
                     recipient_email=email,
                     smtp_user=st.secrets["email"]["user"],
                     smtp_pass=st.secrets["email"]["password"]
@@ -102,9 +103,42 @@ with tabs[1]:
                     st.warning(f"Request was logged but email failed to send. Error: {e}")
 # --- macOS tab ---
 with tabs[2]:
-    col1, col2 = st.columns([1, 12])
-    with col1:
-        st.image(macos_icon_url, width=30)
-    with col2:
-        st.markdown("### MacOS Installation")
-    st.code("NotImplementedYet")
+    with st.form("macos_download_form", border=True):
+            name = st.text_input("First Name")
+            last_name = st.text_input("Last Name")
+            email = st.text_input("📧 Email Address", placeholder="e.g. john@example.com")
+            comments = st.text_area("💬 Comments (optional)", height=100)
+            submitted = st.form_submit_button("📨 Submit Request")
+
+            if submitted:
+                if not name or not last_name or not email:
+                    st.error("❗ Please fill in your name, last name, and email.")
+                elif not is_valid_email(email):
+                    st.error("❗ Please enter a valid email address.")
+                else:
+                    # Log in Google Sheet
+                    log_download(name + " " + last_name, email)
+
+                    # Send you an email with their info
+                    try:
+                        notify_admin(
+                            name,
+                            last_name,
+                            email,
+                            comments,
+                            smtp_user=st.secrets["email"]["user"],
+                            smtp_pass=st.secrets["email"]["password"],
+                            recipient_email=st.secrets["email"]["user"]
+                        )
+                        send_auto_reply(
+                        platform="macos",
+                        name=name,
+                        last_name=last_name,
+                        recipient_email=email,
+                        smtp_user=st.secrets["email"]["user"],
+                        smtp_pass=st.secrets["email"]["password"]
+                        )
+                        st.success("✅ Your request has been submitted! The download link has been sent to your email.")
+                        st.balloons()
+                    except Exception as e:
+                        st.warning(f"Request was logged but email failed to send. Error: {e}")
