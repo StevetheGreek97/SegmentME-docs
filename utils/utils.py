@@ -5,9 +5,9 @@ from email.mime.multipart import MIMEMultipart
 
 def send_auto_reply(platform, name, last_name, recipient_email, smtp_user, smtp_pass):
     if platform.lower() == 'windows':
-        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.3/SegmentME.exe"
+        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v1.0.2.0/SegmentME-v1.0.2.0..exe"
     elif platform.lower() == 'macos':
-        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v1.0.0/SegmentME.dmg"
+        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v1.0.2.0/SegmentME-v1.0.2.0..dmg"
 
     subject = "🎉 Your SegmentME Installer is Ready"
     body = f"""
