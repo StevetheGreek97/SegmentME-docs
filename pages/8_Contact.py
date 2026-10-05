@@ -18,7 +18,7 @@ def log_contact(name, email, message):
     sheet.append_row([timestamp, name, email, message])
 
 # --- Page Setup ---
-st.set_page_config(page_title="Contact", page_icon="📩")
+st.set_page_config(page_title="Contact", page_icon="📩", layout="wide")
 st.title("📩 Contact Me")
 st.caption("Having trouble with SegmentME or just want to say hi? I'm happy to hear from you!")
 
@@ -35,6 +35,11 @@ st.markdown(
     - 🐞 Reporting a bug
     - 💡 Feature requests
     - 🙋 General feedback or questions
+
+    If something went wrong, attach your log file, `segmentme.log`:
+    - **Windows:** `%APPDATA%\\segmentme\\logs`
+    - **macOS:** `~/Library/Logs/segmentme`
+    - **Linux:** `~/.config/segmentme/logs`
     """
 )
 
@@ -66,9 +71,15 @@ st.markdown(
     "[Research Group](https://www.biologie.uni-hamburg.de/forschung/populationsgenomik.html)"
 )
 
-st.markdown(
-    "👨‍🔬 *SegmentME is developed as part of my work at the "
-    "[Population Genomics Group, University of Hamburg](https://www.biologie.uni-hamburg.de/forschung/populationsgenomik.html).*\n\n"
-    "🔒 *Your contact information will only be used to respond to your message. "
-    "It will not be shared or used for any marketing purposes.*"
+st.markdown("---")
+st.caption("☕ **Support This Project**")
+st.caption(
+    "SegmentME is open source and developed with love as part of my academic work. "
+    "If you find it useful and want to support its development, consider buying me a coffee via PayPal 💙"
+)
+
+# Replace with your real PayPal.me link or donation button
+st.caption(
+    "[![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg?logo=paypal&style=for-the-badge)]"
+    "(https://www.paypal.me/yourusername)"
 )

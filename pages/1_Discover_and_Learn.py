@@ -1,6 +1,5 @@
 # pages/1_Discover_and_Learn.py
 import streamlit as st
-from utils.utils import get_text
 
 st.set_page_config(page_title="Discover and Learn", page_icon="🧠", layout="wide")
 st.title("🧠 Discover and Learn")
@@ -58,24 +57,10 @@ st.markdown("""
         margin: 0;
     }
 
-    .guidelines {
-        padding: 0.9rem 1.2rem;
-        border-left: 4px solid var(--primary-color);
-        margin-top: 1.2rem;
-        border-radius: 12px;
-        background-color: rgba(255, 215, 0, 0.12);
-        font-size: 0.95rem;
-    }
-
-    body[data-theme="light"] .guidelines {
-        background-color: rgba(255, 235, 150, 0.2);
-    }
 </style>
 """, unsafe_allow_html=True)
 
-
-
-st.markdown("Explore computer vision concepts and follow a practical step-by-step guide to plan, annotate, and train your model with SegmentME.")
+st.markdown("The terms used across SegmentME and in image segmentation in general.")
 
 # ─────────────────────────────
 # TERMINOLOGY
@@ -116,44 +101,3 @@ for section, terms in groups.items():
                 <p style="margin:0.2rem 0 0;">{desc}</p>
             </div>
             """, unsafe_allow_html=True)
-
-# ─────────────────────────────
-# PROJECT SETUP STEPS
-# ─────────────────────────────
-st.divider()
-st.header("🛠️ Project Setup Guide")
-
-steps = get_text('discover', 'assets/discover.yaml')
-
-for step in steps:
-    title = step['title']
-    content = step['content']
-    lines = content.strip().split('\n')
-
-    bullets = []
-    guidelines = []
-    inside_guidelines = False
-
-    for line in lines:
-        stripped = line.strip()
-        if "annotation guidelines" in stripped.lower():
-            inside_guidelines = True
-            continue
-        if inside_guidelines and stripped.startswith("-"):
-            guidelines.append(f"<li>{stripped.lstrip('-* ').strip()}</li>")
-        elif not inside_guidelines and stripped.startswith("-"):
-            bullets.append(f"<li>{stripped.lstrip('-* ').strip()}</li>")
-
-    bullet_html = "<ul>" + "\n".join(bullets) + "</ul>"
-    guideline_html = (
-        f"<div class='guidelines'><strong>Annotation Guidelines:</strong><ul>{''.join(guidelines)}</ul></div>"
-        if guidelines else ""
-    )
-
-    st.markdown(f"""
-            <div class="card">
-                <h4>{title}</h4>
-                {bullet_html}
-                {guideline_html}
-            </div>
-        """, unsafe_allow_html=True)

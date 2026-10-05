@@ -3,142 +3,92 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 from utils.utils import is_valid_email, notify_admin, send_auto_reply
-# Icons
-windows_icon_url = "https://commons.wikimedia.org/wiki/File:Windows_logo_-_2002%E2%80%932012_(Black).svg#/media/File:Unofficial_Windows_logo_variant_-_2002%E2%80%932012_(Multicolored).svg"
-macos_icon_url = "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg"
 
-# Google Sheets setup
+st.set_page_config(page_title="Install and Setup", page_icon="⚙️", layout="centered")
+
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
-    "https://www.googleapis.com/auth/drive"
+    "https://www.googleapis.com/auth/drive",
 ]
 creds = Credentials.from_service_account_info(st.secrets["google"], scopes=scope)
 client = gspread.authorize(creds)
 sheet = client.open("SegmentME Downloads").sheet1
 
+BUILD_LABELS = {"cpu": "CPU (any computer)", "cuda": "CUDA (NVIDIA GPU only)"}
+
+
 def log_download(name, email):
     timestamp = datetime.now().isoformat()
     sheet.append_row([timestamp, name, email])
 
-# Page setup
-st.set_page_config(page_title="Install and Setup", page_icon="⚙️")
-st.header("⚙️ Install and Setup")
 
-tabs = st.tabs(["Linux", "Windows", "MacOS"])
-
-# --- Linux tab ---
-with tabs[0]:
-    st.markdown("### 🐧 Linux Installation Instructions")
-    st.markdown("Follow these steps to install and run SegmentME on most Debian/Ubuntu-based systems:")
-
-    st.markdown("#### Step 1: Update your system and install dependencies")
-    st.code("""
-sudo apt update && sudo apt upgrade -y
-sudo apt install python3 python3-pip python3-venv
-    """)
-
-    st.markdown("#### Step 2: Create and activate a virtual environment (recommended)")
-    st.code("""
-python3 -m venv segmentme-env
-source segmentme-env/bin/activate
-    """)
-
-    st.markdown("#### Step 3: Download or clone SegmentME and install requirements")
-    st.code("""
-git clone https://github.com/yourusername/SegmentME.git
-cd SegmentME
-pip install -r requirements.txt
-    """)
-
-    st.markdown("#### Step 4: Run SegmentME")
-    st.code("python main.py")
-    st.success("SegmentME is now installed and running on your Linux system.")
-
-# --- Windows tab ---
-with tabs[1]:
-    st.image("assets/windows.png", width=50)
-    st.markdown("### Windows Installer Request")
-
-    st.markdown("Please fill out the form below to request the Windows version of SegmentME.")
-    st.markdown("*You will receive the link by email after your request is approved.*")
-
-    with st.form("windows_download_form", border=True):
+def request_form(platform, form_key, choose_build=False):
+    with st.form(form_key, border=True):
         name = st.text_input("First Name")
         last_name = st.text_input("Last Name")
         email = st.text_input("📧 Email Address", placeholder="e.g. john@example.com")
         comments = st.text_area("💬 Comments (optional)", height=100)
+        build = "cpu"
+        if choose_build:
+            build = st.radio("Build", list(BUILD_LABELS), horizontal=True, format_func=BUILD_LABELS.get)
         submitted = st.form_submit_button("📨 Submit Request")
 
-        if submitted:
-            if not name or not last_name or not email:
-                st.error("❗ Please fill in your name, last name, and email.")
-            elif not is_valid_email(email):
-                st.error("❗ Please enter a valid email address.")
-            else:
-                # Log in Google Sheet
-                log_download(name + " " + last_name, email)
-
-                # Send you an email with their info
-                try:
-                    notify_admin(
-                        name,
-                        last_name,
-                        email,
-                        comments,
-                        smtp_user=st.secrets["email"]["user"],
-                        smtp_pass=st.secrets["email"]["password"],
-                        recipient_email=st.secrets["email"]["user"]
-                    )
-                    send_auto_reply(
-                    platform="windows",
+        if not submitted:
+            return
+        if not name or not last_name or not email:
+            st.error("❗ Please fill in your name, last name, and email.")
+        elif not is_valid_email(email):
+            st.error("❗ Please enter a valid email address.")
+        else:
+            log_download(name + " " + last_name, email)
+            try:
+                notify_admin(
+                    name,
+                    last_name,
+                    email,
+                    comments,
+                    smtp_user=st.secrets["email"]["user"],
+                    smtp_pass=st.secrets["email"]["password"],
+                    recipient_email=st.secrets["email"]["user"],
+                    build=build,
+                )
+                send_auto_reply(
+                    platform=platform,
                     name=name,
                     last_name=last_name,
                     recipient_email=email,
                     smtp_user=st.secrets["email"]["user"],
-                    smtp_pass=st.secrets["email"]["password"]
-                    )
-                    st.success("✅ Your request has been submitted! The download link has been sent to your email.")
-                    st.balloons()
-                except Exception as e:
-                    st.warning(f"Request was logged but email failed to send. Error: {e}")
-# --- macOS tab ---
+                    smtp_pass=st.secrets["email"]["password"],
+                    build=build,
+                )
+                st.success("✅ Your request has been submitted! The download link has been sent to your email.")
+                st.balloons()
+            except Exception as e:
+                st.warning(f"Request was logged but email failed to send. Error: {e}")
+
+
+st.header("⚙️ Install and Setup")
+
+tabs = st.tabs(["Linux", "Windows", "MacOS"])
+
+with tabs[0]:
+    st.markdown("### Linux Installer Request")
+    st.markdown("Please fill out the form below to request the Linux version of SegmentME.")
+    st.markdown("*You will receive the link by email after your request is approved.*")
+    request_form("linux", "linux_download_form", choose_build=True)
+
+with tabs[1]:
+    st.image("assets/windows.png", width=50)
+    st.markdown("### Windows Installer Request")
+    st.markdown("Please fill out the form below to request the Windows version of SegmentME.")
+    st.markdown("*You will receive the link by email after your request is approved.*")
+    request_form("windows", "windows_download_form", choose_build=True)
+
 with tabs[2]:
-    with st.form("macos_download_form", border=True):
-            name = st.text_input("First Name")
-            last_name = st.text_input("Last Name")
-            email = st.text_input("📧 Email Address", placeholder="e.g. john@example.com")
-            comments = st.text_area("💬 Comments (optional)", height=100)
-            submitted = st.form_submit_button("📨 Submit Request")
-
-            if submitted:
-                if not name or not last_name or not email:
-                    st.error("❗ Please fill in your name, last name, and email.")
-                elif not is_valid_email(email):
-                    st.error("❗ Please enter a valid email address.")
-                else:
-                    # Log in Google Sheet
-                    log_download(name + " " + last_name, email)
-
-                    # Send you an email with their info
-                    try:
-                        notify_admin(
-                            name,
-                            last_name,
-                            email,
-                            comments,
-                            smtp_user=st.secrets["email"]["user"],
-                            smtp_pass=st.secrets["email"]["password"],
-                            recipient_email=st.secrets["email"]["user"]
-                        )
-                        send_auto_reply(
-                        platform="macos",
-                        name=name,
-                        last_name=last_name,
-                        recipient_email=email,
-                        smtp_user=st.secrets["email"]["user"],
-                        smtp_pass=st.secrets["email"]["password"]
-                        )
-                        st.success("✅ Your request has been submitted! The download link has been sent to your email.")
-                        st.balloons()
-                    except Exception as e:
-                        st.warning(f"Request was logged but email failed to send. Error: {e}")
+    st.markdown("### macOS Installer Request")
+    st.markdown("Please fill out the form below to request the macOS version of SegmentME.")
+    st.markdown("*You will receive the link by email after your request is approved — a `.dmg` "
+                "disk image: open it and drag `SegmentME.app` to the Applications shortcut inside, "
+                "built for Apple Silicon Macs. There is no Intel build: GitHub retired hosted Intel "
+                "macOS runners in December 2025, and Apple no longer sells Intel hardware.*")
+    request_form("macos", "macos_download_form")

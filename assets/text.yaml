@@ -1,133 +1,165 @@
 intro: >
-  SegmentME is a powerful image annotation and segmentation tool designed for high-throughput phenotyping, object instance analysis, and smart annotation workflows using models like SAM2, DEXTR, and YOLO. The application provides a user-friendly interface to annotate, manage, and visualize image data with rich statistics and custom tooling. It supports various image formats and integrates seamlessly with machine learning models for efficient annotation tasks. SegmentME is ideal for researchers, data scientists, and anyone needing to annotate images quickly and accurately.
+  SegmentME is a desktop image-annotation tool for segmentation-based workflows: high-throughput
+  phenotyping, object instance analysis, and smart annotation using models like SAM2, SAM3, DEXTR,
+  and YOLO. It supports AI-assisted, semi-automatic, and fully manual annotation methods, freehand
+  brush and split editing of existing masks, batch inference over a whole dataset, and training your
+  own YOLO segmentation model — all without writing any code. It supports common image formats and
+  exports to YOLO or COCO for training elsewhere. SegmentME is ideal for researchers, data scientists,
+  and anyone needing to annotate images quickly and accurately.
 
+# ─────────────────────────────────────────────────────────────────────────
+# Tools page (pages/6_Tools.py): each top-level key becomes one subsection.
+# Split/Brush have no "video" key yet: the Tools page's own try/except
+# falls back to "No video available for this tool" when it's missing.
+# ─────────────────────────────────────────────────────────────────────────
 tools:
-  SAM2:
+  SAM:
     desc: >
-      Segment Anything Model 2 (SAM2) is a state-of-the-art foundation model for segmentation.
-      You can interactively segment objects by clicking foreground (positive) or background (negative) points.
-      Ideal for general object boundaries.
+      Segment Anything (SAM) is a foundation model for segmentation, guided by points, a box, or both.
+      Left-click on the object to add a **foreground point**; right-click to add a **background point**
+      the mask should exclude. To draw a box instead, hold **Ctrl** and drag with the left mouse button
+      around the object. Add as many points as you need, and combine them with a box for extra control.
 
-      **Press `E`** to execute the model. **Press `S`** to save the mask.
+      The model behind SAM is chosen in **Settings → Models**. See *Models and Training*.
+
+      **Press `E`** to run the model. **Press `S`** to save the mask. Turning the SAM button off again
+      unloads the model and frees its memory.
     video: assets/tour/sam.mp4
-    citation: "[Kirillov et al., 2023](https://arxiv.org/abs/2304.02643)"
-
-  SAM2-Box:
-    desc: >
-      Use SAM2 by drawing a bounding box. This is useful when you want to quickly guide the model
-      to a specific region of interest.
-
-      **Press `E`** to generate the mask. **Press `S`** to save it.
-    video: assets/tour/box.mp4
     citation: "[Kirillov et al., 2023](https://arxiv.org/abs/2304.02643)"
 
   DEXTR:
     desc: >
-      Deep Extreme Cut (DEXTR) segments objects using 4+ extreme points (top, bottom, left, right).
-      It's particularly good for segmenting distinct, irregular shapes with minimal clicks.
+      Deep Extreme Cut (DEXTR) segments an object from exactly **4 extreme points** — its topmost,
+      bottommost, leftmost, and rightmost pixels, in any order. Particularly good for distinct,
+      irregular shapes with minimal clicking.
 
-      **Press `E`** to generate the mask. **Press `S`** to save it.
+      **Press `E`** to generate the mask once all 4 points are placed. **Press `S`** to save it.
     video: assets/tour/dextr.mp4
     citation: "[Maninis et al., 2018](https://arxiv.org/abs/1711.09081)"
 
   Manual:
     desc: >
-      This tool allows freehand polygon annotation by clicking around the object's edges.
-      Perfect for full manual control when automatic tools aren’t accurate.
+      Freehand polygon annotation: left-click around the object's edge to place vertices (at least 3
+      are needed), right-click to remove the last point if you place one wrong. Full manual control for
+      when the AI tools aren't accurate enough.
 
       **Press `S`** to finalize and save the mask.
     video: assets/tour/manual.mp4
     citation: null
 
-  Scissors:
+  Intelligent Scissors:
     desc: >
-      The intelligent scissors tool follows image edges between seed points, making it great for tracing complex contours.
-      It offers semi-automatic support by snapping paths to high-contrast boundaries.
+      Click along the object's boundary to drop seed points; the tool snaps the path between them to
+      the nearest high-contrast edge, so it's great for tracing complex contours semi-automatically. If
+      a segment looks wrong, undo the last seed and try again.
 
       **Press `S`** to save the completed mask.
     video: assets/tour/scissors.mp4
     citation: "[Mortensen & Barrett, 1995](https://doi.org/10.1109/34.387593)"
-  Inference:
+
+  Split Mask:
     desc: >
-        The Inference tool allows you to automatically annotate your entire uploaded dataset using a pretrained model 
-        (e.g., YOLO, SAM, etc). This is ideal for bulk annotation or initializing masks before refinement.
+      Cuts one existing mask into pieces — useful when a single mask accidentally merged two touching
+      objects. Right-click the mask (in the image or the Annotations table) → **Actions → Split mask**,
+      then left-drag a stroke all the way across it. Release the mouse to cut; the pieces keep the
+      original mask's class.
 
-        Choose the model and the confidence threshold for the inference.
-        **Press `Run`** to start the inference process. The model will process all images in the project folder and generate masks based on the selected model.
-        Annotated masks will be automatically saved.
+      Right-click or **Esc** cancels before you finish the stroke. Unlike the other tools, this doesn't
+      use `E`/`S` — the cut happens the moment you release the mouse.
+    video: assets/tour/split_mask.mp4
+    citation: null
 
+  Brush Edit:
+    desc: >
+      Paint or erase the pixels of one existing mask, for a quick touch-up rather than redrawing it
+      from scratch. Right-click the mask → **Actions → Brush edit**, then:
 
-    video: assets/tour/custom_inference.mp4
+      - **Left-drag** paints, **right-drag** erases
+      - **Scroll** resizes the brush; **Ctrl+Scroll** zooms the image instead
+      - **Press `S`** to apply the edit, **Esc** to cancel and discard it
+
+      The mask is re-contoured from the painted pixels when you apply — if your strokes split it into
+      separate blobs, you get separate masks back, all in the same class.
+    video: assets/tour/brush_edit.mp4
     citation: null
 
 
+# ─────────────────────────────────────────────────────────────────────────
+# Create and Manage Projects page
+# ─────────────────────────────────────────────────────────────────────────
 create_project:
   instructions: |
-
-
-    1. Click **Create New Project** in the main menu  
-    2. Enter a project name (e.g., `MyCoolProject`)  
-    3. Choose or create a target folder to save your project
+    1. Launch SegmentME. If no project is open yet, the startup screen offers **New Project** and a
+       list of **Recent Projects** you can reopen with one click.
+    2. Click **New Project**, enter a project name (e.g. `MyCoolProject`), and choose or create a
+       target folder.
+    3. Optionally add images right away by dragging them onto the dialog or clicking **Add Images…** —
+       or skip this and import them later.
 
   setup: |
-
-    - The project folder will contain all images, masks, and metadata.
-    - A `project_name.SEproj` will be created in the target folder, which is used to manage the project. The project will be automatically loaded into the application.
-    - You can create multiple projects to organize your work.
-    - Each project is independent and can have its own classes and annotations.
+    - The project folder holds an `images/` subfolder, a hidden `.segmentme/` folder with the
+      annotation database, and a `<name>.SEproj` file that SegmentME uses to open the project again.
+    - **Linux:** once installed (`.deb`, or `install-desktop.sh` for a manual install), double-clicking
+      a `.SEproj` file in the file manager opens that project directly — no need to go through the
+      startup screen. On any platform, starting SegmentME with a `.SEproj` path as its only argument
+      does the same thing.
+    - Create as many projects as you like — each is fully independent, with its own images, classes,
+      and annotations.
 
 image_import:
   instructions: |
-    - Once you create the project, the application will prompt you to import images.
-    - You can also import images later by Clicking the **File → Import Images** Duplicate images will be skipped. 
-
-    - Supported formats:`.jpg` `.png` `.jpeg` `.tiff`
+    - If you didn't add images while creating the project, do it any time from **File → Import
+      Images**. Already-imported files are skipped, so it's safe to import the same folder twice.
+    - Supported formats: `.png` `.jpg` `.jpeg` `.bmp` `.tiff` `.tif`
 
 
 add_class:
   instructions: |
-
-    - Use the **Class Selector** panel (left sidebar)
-    1. Click `Add Class`
-    2. Enter a class name (e.g., `d_galeata`, `d_pulex`)
-    3. Chooce a color for the class
-    4. New class appears in the dropdown and color map
+    - Use the **Classes** section of the sidebar
+    1. Click **Add Class**
+    2. Enter a class name — letters, numbers, and underscores only (e.g. `d_galeata`, `d_pulex`)
+    3. Pick a color for the class
+    4. It appears immediately in the dropdown and on the class color map
 
 remove_class:
   instructions: |
-    - Use the **Class Selector** panel (left sidebar)
+    - Use the **Classes** section of the sidebar
     1. Select the class in the dropdown
-    2. Click `Remove Selceted`
-    3. All masks with this class will be deleted (confirmation required)
-
+    2. Click **Remove Selected**
+    3. Confirm — every mask with that class is deleted along with it, so double-check the count shown
+       in the confirmation dialog first
 
 delete_masks:
   instructions: |
-    - Use the **Annotation Selector** panel (right sidebar) or click the mask in the image
-    1. Select the anntatation in the table
-    2. Click `del` key
-    3. The selected mask will be deleted 
-    
-    🧠 Tip: You can delete multiple masks at once using checkboxes in the table.
+    - Select one or more masks — click them in the image, or select rows in the **Annotations** table
+      (`File → Annotations`)
+    1. Press the **Delete** key, or right-click the selection → **Actions → Delete selected**
+    2. The selected mask(s) are removed immediately (no confirmation, so double-check the selection)
+
+    🧠 Tip: right-click also offers **Select all masks on image**, handy before a bulk delete or a bulk
+    class change.
 
 rename_masks:
   instructions: |
-    - Use the **Annotation Selector** panel (right sidebar) or click the mask in the image
-    1. Select the anntatation in the table
-    2. Duble-click the `Class` row of the selected mask
-    3. Enter a new name for the mask
-    4. The mask will be renamed in the table 
-    5. if that class does not exist, the annotation will be assigned to the `Unclassified` class (white color). *Important: this will not create a new class, it will just rename the mask*. You should manually create a new class if needed.
+    - In the **Annotations** table (`File → Annotations`), double-click the **Class** cell of the mask
+      you want to rename and type the new class name.
+    - Faster for several masks at once: select them (in the image or the table), right-click →
+      **Actions → Set class**, and pick a class from the list.
+    - Typing a class name that doesn't exist yet just relabels the mask to it — it does **not** create
+      a new class. Add the class first (see *Add a Class*) if you want a real new category rather than
+      a typo landing in `Unclassified`.
+
 export_annotations:
   instructions: |
+    SegmentME exports your project's annotations for training elsewhere, sharing, or archiving —
+    `File → Export annotations`.
 
-      SegmentME allows you to export all annotation data from your project for training, analysis, or sharing.
-
-      **Exported Files:**
-      - `.txt` files for each image, saved in the `annotations/curent_date` folder
-      - Each line represents a polygon mask in the format:  
-        `class_id x1 y1 x2 y2 ... xn yn`
-      - `data.yaml` file containing:
-        - List of class names
-
-
+    - **Format:** **YOLO** (polygon `.txt` per image, one line per mask as
+      `class_id x1 y1 x2 y2 ... xn yn`, normalized 0–1) or **COCO** (single JSON annotation file). Both
+      also write a `data.yaml`/class list alongside the annotations. *Pascal VOC is listed but not
+      implemented yet.*
+    - **Train / Val / Test split:** drag the slider to set what fraction of images go to each split;
+      the export splits the dataset automatically.
+    - Need a quick spreadsheet instead of a training-ready export? **File → Save Results** writes every
+      mask (image, ID, class, surface area) straight to a `.csv` file in the project folder — no
+      dialog, no split, just the raw numbers.

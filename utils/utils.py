@@ -3,25 +3,77 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-def send_auto_reply(platform, name, last_name, recipient_email, smtp_user, smtp_pass):
-    if platform.lower() == 'windows':
-        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v0.0.3/SegmentME.exe"
-    elif platform.lower() == 'macos':
-        download_link = "https://github.com/StevetheGreek97/SegmentME-docs/releases/download/v1.0.0/SegmentME.dmg"
+# The app itself (build.py, the release workflow) lives in the SegmentME
+# repo, not this docs repo -- that's where CI actually publishes releases.
+# "latest" rather than a pinned version/filename: build.py names archives
+# with the version and CPU architecture baked in (e.g.
+# SegmentME-Setup-2.0.0-windows-cpu-x64.exe,
+# SegmentME-2.0.0-macos-cpu-arm64.dmg), and each platform ships only its
+# native installer -- Setup.exe on Windows, .dmg on macOS -- except Linux,
+# which also keeps a .tar.gz alongside the .deb for non-Debian distros.
+# Linking the release page rather than one guessed filename lets the
+# visitor pick the right one and never goes stale.
+_RELEASES_URL = "https://github.com/StevetheGreek97/SegmentME/releases/latest"
+
+_PLATFORM_NAMES = {"windows": "Windows", "macos": "macOS", "linux": "Linux"}
+
+_BUILD_LABELS = {"cpu": "CPU", "cuda": "CUDA"}
+
+_INSTALL_STEPS = {
+    ("windows", "cpu"): """Download SegmentME-Setup-<version>-windows-cpu-x64.exe from the release page and run it.
+Follow the installer prompts to finish. This build works on any computer, with or without an NVIDIA GPU.""",
+    ("windows", "cuda"): """Download SegmentME-Setup-<version>-windows-cuda-x64.exe from the release page and run it.
+Follow the installer prompts to finish. This build needs an NVIDIA GPU.""",
+    ("macos", "cpu"): """Download SegmentME-<version>-macos-cpu-arm64.dmg from the release page and open it.
+Drag SegmentME.app onto the Applications shortcut inside the window. This build is for Apple Silicon Macs only.""",
+    ("linux", "cpu"): """Debian, Ubuntu, or Mint -- download segmentme_<version>_amd64.deb and install it:
+
+    sudo apt install ./segmentme_<version>_amd64.deb
+
+SegmentME then appears in the applications menu, and .SEproj project files open with it on
+double-click. Remove it later with: sudo apt remove segmentme
+
+Other distributions -- download SegmentME-<version>-linux-cpu-x64.tar.gz (or -arm64 on an ARM machine),
+extract it, and run this inside the extracted folder:
+
+    ./install-desktop.sh
+
+From source -- clone the repository, then install and run:
+
+    git clone https://github.com/StevetheGreek97/SegmentME.git
+    cd SegmentME
+    ./install.sh
+    ./run.sh""",
+    ("linux", "cuda"): """This build needs an NVIDIA GPU. It comes in parts, so download every
+segmentme-cuda_<version>_amd64.deb.part-NN file from the release page, then join, verify, and install them:
+
+    cat segmentme-cuda_<version>_amd64.deb.part-* > segmentme-cuda_<version>_amd64.deb
+    sha256sum --ignore-missing -c SHA256SUMS
+    sudo apt install ./segmentme-cuda_<version>_amd64.deb""",
+}
+
+
+def send_auto_reply(platform, name, last_name, recipient_email, smtp_user, smtp_pass, build="cpu"):
+    platform = platform.lower()
+    platform_name = _PLATFORM_NAMES[platform]
+    build_label = _BUILD_LABELS[build]
 
     subject = "🎉 Your SegmentME Installer is Ready"
     body = f"""
 Hi {name} {last_name},
 
-Thanks for your interest in SegmentME!
+Thanks for your interest in SegmentME! Your {platform_name} {build_label} download is ready on the latest release page:
+🔗 {_RELEASES_URL}
 
-You can download the Windows installer here:
-🔗 {download_link}
+Each release lists several files -- pick the one for {platform_name} {build_label}.
 
+How to install SegmentME on {platform_name} ({build_label} build):
+
+{_INSTALL_STEPS[(platform, build)]}
 
 If you have any questions or feedback, feel free to reply to this email.
 
-Best regards,  
+Best regards,
 PopGen Team
 """
 
@@ -41,13 +93,14 @@ PopGen Team
 def is_valid_email(email):
     return bool(re.match(r"[^@]+@[^@]+\.[^@]+", email))
 
-def notify_admin(name, last_name, user_email, comments, smtp_user, smtp_pass, recipient_email):
+def notify_admin(name, last_name, user_email, comments, smtp_user, smtp_pass, recipient_email, build="cpu"):
     subject = "📥 New SegmentME Installer Request"
     body = f"""
 You received a new request for the SegmentME installer.
 
 👤 Name: {name} {last_name}
 📧 Email: {user_email}
+📦 Build: {_BUILD_LABELS[build]}
 📝 Comments: {comments or 'None provided'}
 
 Please follow up manually with the download link.
