@@ -81,5 +81,5 @@ st.caption(
 # Replace with your real PayPal.me link or donation button
 st.caption(
     "[![Donate via PayPal](https://img.shields.io/badge/Donate-PayPal-blue.svg?logo=paypal&style=for-the-badge)]"
-    "(https://www.paypal.me/yourusername)"
+    "(https://www.paypal.me/stevemavrianos)"
 )
